@@ -1,0 +1,8 @@
+[package]
+name = "aoc-rs-2020"
+version = "0.1.0"
+authors = ["Marc Noirot <marc.noirot@gmail.com>"]
+edition = "2018"
+build = "build.rs"
+
+[dependencies]
