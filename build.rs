@@ -1,10 +1,8 @@
-// generate file that dynamically instantiates all solutions
-use std::{
-    error::Error,
-    fs::{read_dir, File},
-    io::{self, Write},
-    path::{Path, PathBuf},
-};
+use std::error::Error;
+use std::fs::{read_dir, File};
+use std::io;
+use std::io::Write;
+use std::path::{Path, PathBuf};
 
 fn days(input_dir: &str) -> io::Result<Vec<u32>> {
     let mut days = read_dir(input_dir)?
@@ -13,7 +11,7 @@ fn days(input_dir: &str) -> io::Result<Vec<u32>> {
         .flat_map(|e| e.file_name().into_string())
         .flat_map(|s| s[3..].parse::<u32>())
         .collect::<Vec<_>>();
-    days.sort();
+    days.sort_unstable();
     Ok(days)
 }
 
