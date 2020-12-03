@@ -1,7 +1,9 @@
 use crate::solver::Solver;
+use lazy_static::lazy_static;
 use regex::Regex;
 use std::error::Error;
 use std::io::{BufRead, BufReader, Read};
+use std::str::FromStr;
 
 pub struct Problem;
 
@@ -14,7 +16,7 @@ impl Solver for Problem {
         BufReader::new(r)
             .lines()
             .flatten()
-            .flat_map(|s| PasswordEntry::from_str(&s))
+            .flat_map(|s| s.parse())
             .collect()
     }
 
@@ -34,10 +36,15 @@ pub struct PasswordEntry {
     password: String,
 }
 
-impl PasswordEntry {
-    fn from_str(s: &str) -> Result<Self, Box<dyn Error>> {
-        let re = Regex::new(r"^(\d+)-(\d+) (.): (.+)$")?;
-        let cap = re.captures(s).ok_or("no match")?;
+impl FromStr for PasswordEntry {
+    type Err = Box<dyn Error>;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        lazy_static! {
+            static ref RE: Regex = Regex::new(r"^(\d+)-(\d+) (.): (.+)$").unwrap();
+        }
+
+        let cap = RE.captures(s).ok_or("no match")?;
 
         Ok(Self {
             i1: cap[1].parse()?,
@@ -46,7 +53,9 @@ impl PasswordEntry {
             password: cap[4].into(),
         })
     }
+}
 
+impl PasswordEntry {
     fn is_valid(&self) -> bool {
         let c = self.password.chars().filter(|&c| c == self.policy).count();
         c >= self.i1 && c <= self.i2
