@@ -31,18 +31,13 @@ fn check_slope(input: &Grid<Slope>, dx: usize, dy: usize) -> usize {
     let mut tree_counter = 0;
     let mut pt = GridPoint { x: 0, y: 0 };
 
-    loop {
+    while pt.y < input.h {
         if pt.x >= input.w {
             pt.x -= input.w;
         }
-        if pt.y >= input.h {
-            break;
-        }
 
-        if let Some(e) = input.get(&pt) {
-            if e == &Slope::Tree {
-                tree_counter += 1;
-            }
+        if let Some(&Slope::Tree) = input.get(&pt) {
+            tree_counter += 1;
         }
 
         pt.x += dx;
