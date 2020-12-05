@@ -18,23 +18,19 @@ impl Solver for Problem {
     }
 
     fn solve_first(&self, input: &Self::Input) -> Self::Output1 {
-        input.iter().map(|bp| bp.id()).max().unwrap()
+        input.iter().map(|bp| bp.id()).max().unwrap_or_default()
     }
 
     fn solve_second(&self, input: &Self::Input) -> Self::Output2 {
         let booked_seats = input.iter().map(|bp| bp.id()).collect::<HashSet<_>>();
-
         let max_id = 127 * 8 + 7;
-        for id in 1..max_id {
-            if !booked_seats.contains(&id)
-                && booked_seats.contains(&(id - 1))
-                && booked_seats.contains(&(id + 1))
-            {
-                return id;
-            }
-        }
-
-        0
+        (1..max_id)
+            .find(|id| {
+                !booked_seats.contains(&id)
+                    && booked_seats.contains(&(id - 1))
+                    && booked_seats.contains(&(id + 1))
+            })
+            .unwrap_or_default()
     }
 }
 
@@ -95,16 +91,16 @@ mod tests {
 
     #[test]
     fn test_boarding_pass_position() {
-        let p = BoardingPass::new("BFFFBBFRRR").position();
-        assert_eq!(p.row, 70);
-        assert_eq!(p.col, 7);
+        let t = &[
+            ("BFFFBBFRRR", Position { row: 70, col: 7 }),
+            ("FFFFFFFLLL", Position { row: 0, col: 0 }),
+            ("BBBBBBBRRR", Position { row: 127, col: 7 }),
+        ];
 
-        let p = BoardingPass::new("FFFFFFFLLL").position();
-        assert_eq!(p.row, 0);
-        assert_eq!(p.col, 0);
-
-        let p = BoardingPass::new("BBBBBBBRRR").position();
-        assert_eq!(p.row, 127);
-        assert_eq!(p.col, 7);
+        for (s, pos) in t {
+            let p = BoardingPass::new(s).position();
+            assert_eq!(p.row, pos.row);
+            assert_eq!(p.col, pos.col);
+        }
     }
 }
