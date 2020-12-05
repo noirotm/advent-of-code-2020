@@ -89,48 +89,31 @@ mod tests {
 
     #[test]
     fn test_is_valid() {
-        let entry = PasswordEntry {
-            i1: 1,
-            i2: 1,
-            policy: 'a',
-            password: "a".to_string(),
-        };
-        assert!(entry.is_valid());
+        let passwords = &[
+            ("1-1 a: a", true),
+            ("4-5 a: aaaaa", true),
+            ("4-5 a: aaaaaa", false),
+            ("4-5 a: bbbbb", false),
+        ];
 
-        let entry = PasswordEntry {
-            i1: 4,
-            i2: 5,
-            policy: 'a',
-            password: "aaaaa".to_string(),
-        };
-        assert!(entry.is_valid());
-
-        let entry = PasswordEntry {
-            i1: 4,
-            i2: 5,
-            policy: 'a',
-            password: "aaaaaaa".to_string(),
-        };
-        assert!(!entry.is_valid());
-
-        let entry = PasswordEntry {
-            i1: 4,
-            i2: 5,
-            policy: 'a',
-            password: "bbbbb".to_string(),
-        };
-        assert!(!entry.is_valid());
+        for &(p, is_valid) in passwords {
+            assert_eq!(PasswordEntry::from_str(p).unwrap().is_valid(), is_valid);
+        }
     }
 
     #[test]
     fn test_is_valid_correct() {
-        let p = PasswordEntry::from_str("1-3 a: abcde").unwrap();
-        assert!(p.is_valid_correct());
+        let passwords = &[
+            ("1-3 a: abcde", true),
+            ("1-3 b: cdefg", false),
+            ("2-9 c: ccccccccc", false),
+        ];
 
-        let p = PasswordEntry::from_str("1-3 b: cdefg").unwrap();
-        assert!(!p.is_valid_correct());
-
-        let p = PasswordEntry::from_str("2-9 c: ccccccccc").unwrap();
-        assert!(!p.is_valid_correct());
+        for &(p, is_valid_correct) in passwords {
+            assert_eq!(
+                PasswordEntry::from_str(p).unwrap().is_valid_correct(),
+                is_valid_correct
+            );
+        }
     }
 }
