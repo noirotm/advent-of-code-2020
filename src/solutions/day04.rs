@@ -14,9 +14,7 @@ impl Solver for Problem {
     type Output2 = usize;
 
     fn parse_input<R: Read>(&self, mut r: R) -> Self::Input {
-        let mut s = String::new();
-        r.read_to_string(&mut s).unwrap();
-        s.split("\r\n\r\n").flat_map(|s| s.parse()).collect()
+        Self::split_groups(r)
     }
 
     fn solve_first(&self, input: &Self::Input) -> Self::Output1 {
