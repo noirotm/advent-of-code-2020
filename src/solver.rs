@@ -1,3 +1,4 @@
+use std::str::FromStr;
 use std::{
     fmt::Display,
     fs::File,
@@ -27,6 +28,16 @@ pub trait Solver {
     fn load_input<P: AsRef<Path>>(&self, p: P) -> io::Result<Self::Input> {
         let f = File::open(p)?;
         Ok(self.parse_input(f))
+    }
+
+    fn split_groups<R, T>(mut r: R) -> Vec<T>
+    where
+        R: io::Read,
+        T: FromStr,
+    {
+        let mut s = String::new();
+        r.read_to_string(&mut s).unwrap();
+        s.split("\r\n\r\n").flat_map(|s| s.parse()).collect()
     }
 
     fn solve(&self, day: i32) {
