@@ -1,3 +1,4 @@
+use std::io::Read;
 use std::str::FromStr;
 use std::{
     fmt::Display,
@@ -30,16 +31,6 @@ pub trait Solver {
         Ok(self.parse_input(f))
     }
 
-    fn split_groups<R, T>(mut r: R) -> Vec<T>
-    where
-        R: io::Read,
-        T: FromStr,
-    {
-        let mut s = String::new();
-        r.read_to_string(&mut s).unwrap();
-        s.split("\r\n\r\n").flat_map(|s| s.parse()).collect()
-    }
-
     fn solve(&self, day: i32) {
         let input_file = input_file(day);
         let input = self
@@ -49,5 +40,30 @@ pub trait Solver {
         let s2 = self.solve_second(&input);
         println!("Solution 1: {}", s1);
         println!("Solution 2: {}", s2);
+    }
+}
+
+pub trait ReadExt<T> {
+    fn split_lines(self) -> Vec<T>;
+    fn split_groups(&mut self) -> Vec<T>;
+}
+
+impl<R, T> ReadExt<T> for R
+where
+    R: Read,
+    T: FromStr,
+{
+    fn split_lines(self) -> Vec<T> {
+        BufReader::new(self)
+            .lines()
+            .flatten()
+            .flat_map(|l| l.parse())
+            .collect()
+    }
+
+    fn split_groups(&mut self) -> Vec<T> {
+        let mut s = String::new();
+        self.read_to_string(&mut s).unwrap();
+        s.split("\r\n\r\n").flat_map(|s| s.parse()).collect()
     }
 }

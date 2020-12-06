@@ -1,8 +1,8 @@
-use crate::solver::Solver;
+use crate::solver::{ReadExt, Solver};
 use lazy_static::lazy_static;
 use regex::Regex;
 use std::error::Error;
-use std::io::{BufRead, BufReader, Read};
+use std::io::Read;
 use std::str::FromStr;
 
 pub struct Problem;
@@ -13,11 +13,7 @@ impl Solver for Problem {
     type Output2 = usize;
 
     fn parse_input<R: Read>(&self, r: R) -> Self::Input {
-        BufReader::new(r)
-            .lines()
-            .flatten()
-            .flat_map(|s| s.parse())
-            .collect()
+        r.split_lines()
     }
 
     fn solve_first(&self, input: &Self::Input) -> Self::Output1 {
