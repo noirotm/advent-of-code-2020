@@ -10,8 +10,11 @@ impl Solver for Problem {
     type Output2 = u32;
 
     fn parse_input<R: Read>(&self, r: R) -> Self::Input {
-        let r = BufReader::new(r);
-        r.lines().flatten().flat_map(|l| l.parse()).collect()
+        BufReader::new(r)
+            .lines()
+            .flatten()
+            .flat_map(|l| l.parse())
+            .collect()
     }
 
     fn solve_first(&self, input: &Self::Input) -> Self::Output1 {
