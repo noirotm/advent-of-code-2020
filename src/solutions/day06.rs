@@ -1,4 +1,4 @@
-use crate::solver::Solver;
+use crate::solver::{ReadExt, Solver};
 use std::collections::BTreeSet;
 use std::io::Read;
 use std::str::FromStr;
@@ -10,8 +10,8 @@ impl Solver for Problem {
     type Output1 = usize;
     type Output2 = usize;
 
-    fn parse_input<R: Read>(&self, r: R) -> Self::Input {
-        Self::split_groups(r)
+    fn parse_input<R: Read>(&self, mut r: R) -> Self::Input {
+        r.split_groups()
     }
 
     fn solve_first(&self, input: &Self::Input) -> Self::Output1 {
@@ -49,8 +49,8 @@ impl Group {
 
     fn count_ensemble_answers(&self) -> usize {
         let first = self.answers[0].bytes().collect::<BTreeSet<_>>();
-        let rem = &self.answers[1..];
-        rem.iter()
+        self.answers[1..]
+            .iter()
             .map(|s| s.bytes().collect::<BTreeSet<_>>())
             .fold(first, |a, b| a.intersection(&b).cloned().collect())
             .len()

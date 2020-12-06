@@ -1,6 +1,6 @@
-use crate::solver::Solver;
+use crate::solver::{ReadExt, Solver};
 use std::collections::{HashMap, HashSet};
-use std::io::{BufRead, BufReader, Read};
+use std::io::Read;
 
 pub struct Problem;
 
@@ -10,11 +10,7 @@ impl Solver for Problem {
     type Output2 = u32;
 
     fn parse_input<R: Read>(&self, r: R) -> Self::Input {
-        BufReader::new(r)
-            .lines()
-            .flatten()
-            .flat_map(|l| l.parse())
-            .collect()
+        r.split_lines()
     }
 
     fn solve_first(&self, input: &Self::Input) -> Self::Output1 {

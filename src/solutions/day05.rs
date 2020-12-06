@@ -1,6 +1,7 @@
-use crate::solver::Solver;
+use crate::solver::{ReadExt, Solver};
 use std::collections::HashSet;
-use std::io::{BufRead, BufReader, Read};
+use std::io::Read;
+use std::str::FromStr;
 
 pub struct Problem;
 
@@ -10,11 +11,7 @@ impl Solver for Problem {
     type Output2 = usize;
 
     fn parse_input<R: Read>(&self, r: R) -> Self::Input {
-        BufReader::new(r)
-            .lines()
-            .flatten()
-            .map(|s| BoardingPass::new(&s))
-            .collect()
+        r.split_lines()
     }
 
     fn solve_first(&self, input: &Self::Input) -> Self::Output1 {
@@ -38,6 +35,16 @@ pub struct BoardingPass {
     code: Vec<u8>,
 }
 
+impl FromStr for BoardingPass {
+    type Err = ();
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Ok(Self {
+            code: Vec::from(s.as_bytes()),
+        })
+    }
+}
+
 #[derive(Eq, Hash, PartialEq)]
 struct Position {
     row: usize,
@@ -45,12 +52,6 @@ struct Position {
 }
 
 impl BoardingPass {
-    fn new(s: &str) -> Self {
-        Self {
-            code: Vec::from(s.as_bytes()),
-        }
-    }
-
     fn position(&self) -> Position {
         let row = &self.code[0..7];
         let mut row_range = 0..128;
@@ -98,7 +99,7 @@ mod tests {
         ];
 
         for (s, pos) in t {
-            let p = BoardingPass::new(s).position();
+            let p = BoardingPass::from_str(s).unwrap().position();
             assert_eq!(p.row, pos.row);
             assert_eq!(p.col, pos.col);
         }

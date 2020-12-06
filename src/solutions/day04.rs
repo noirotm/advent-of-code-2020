@@ -1,4 +1,4 @@
-use crate::solver::Solver;
+use crate::solver::{ReadExt, Solver};
 use lazy_static::lazy_static;
 use regex::{Regex, RegexBuilder};
 use std::collections::HashMap;
@@ -14,7 +14,7 @@ impl Solver for Problem {
     type Output2 = usize;
 
     fn parse_input<R: Read>(&self, mut r: R) -> Self::Input {
-        Self::split_groups(r)
+        r.split_groups()
     }
 
     fn solve_first(&self, input: &Self::Input) -> Self::Output1 {
