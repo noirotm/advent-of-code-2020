@@ -15,11 +15,11 @@ impl Solver for Problem {
     }
 
     fn solve_first(&self, input: &Self::Input) -> Self::Output1 {
-        input.iter().map(|g| g.count_answers()).sum()
+        input.iter().map(Group::count_answers).sum()
     }
 
     fn solve_second(&self, input: &Self::Input) -> Self::Output2 {
-        input.iter().map(|g| g.count_ensemble_answers()).sum()
+        input.iter().map(Group::count_ensemble_answers).sum()
     }
 }
 

@@ -15,11 +15,11 @@ impl Solver for Problem {
     }
 
     fn solve_first(&self, input: &Self::Input) -> Self::Output1 {
-        input.iter().map(|bp| bp.id()).max().unwrap_or_default()
+        input.iter().map(BoardingPass::id).max().unwrap_or_default()
     }
 
     fn solve_second(&self, input: &Self::Input) -> Self::Output2 {
-        let booked_seats = input.iter().map(|bp| bp.id()).collect::<HashSet<_>>();
+        let booked_seats = input.iter().map(BoardingPass::id).collect::<HashSet<_>>();
         let max_id = 127 * 8 + 7;
         (1..max_id)
             .find(|id| {
