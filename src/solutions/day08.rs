@@ -64,18 +64,18 @@ enum ExitStatus {
 fn exec_program(program: &[Instr]) -> (i32, ExitStatus) {
     let mut ip = 0;
     let mut acc = 0;
-    let mut exec_map = vec![0; program.len()];
+    let mut exec_map = vec![false; program.len()];
 
     loop {
-        if let Some(&n) = exec_map.get(ip) {
-            if n > 0 {
+        if let Some(&exec) = exec_map.get(ip) {
+            if exec {
                 return (acc, ExitStatus::Loop);
             }
         } else {
             return (acc, ExitStatus::Ok);
         }
 
-        exec_map[ip] += 1;
+        exec_map[ip] = true;
 
         match &program[ip] {
             Instr::Nop(_) => {
