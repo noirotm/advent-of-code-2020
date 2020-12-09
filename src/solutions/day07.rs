@@ -31,7 +31,7 @@ impl Solver for Problem {
 
 pub type Rules = HashMap<String, HashMap<String, usize>>;
 
-pub struct Rule {
+struct Rule {
     bag: String,
     contents: HashMap<String, usize>,
 }
