@@ -1,20 +1,12 @@
-use std::io::Read;
+use std::fmt::Display;
+use std::fs::File;
+use std::io;
+use std::io::{BufRead, BufReader, Read};
+use std::path::Path;
 use std::str::FromStr;
-use std::{
-    fmt::Display,
-    fs::File,
-    io::{self, BufRead, BufReader},
-    path::Path,
-};
 
 fn input_file(day: i32) -> String {
     format!("input/day{:02}", day)
-}
-
-#[allow(dead_code)]
-pub fn read_to_vec<R: io::Read>(r: R) -> Vec<String> {
-    let r = BufReader::new(r);
-    r.lines().filter_map(|l| l.ok()).collect()
 }
 
 pub trait Solver {
