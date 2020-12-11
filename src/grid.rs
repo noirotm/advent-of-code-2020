@@ -82,13 +82,54 @@ where
     }
 
     pub fn set(&mut self, c: impl Coord, value: T) {
-        if let Some(e) = self.cells.get_mut(c.x() + c.y() * self.w) {
-            *e = value;
+        if c.x() < self.w && c.y() < self.h {
+            if let Some(e) = self.cells.get_mut(c.x() + c.y() * self.w) {
+                *e = value;
+            }
         }
     }
 
     pub fn get(&self, c: impl Coord) -> Option<&T> {
-        self.cells.get(c.x() + c.y() * self.w)
+        if c.x() < self.w && c.y() < self.h {
+            self.cells.get(c.x() + c.y() * self.w)
+        } else {
+            None
+        }
+    }
+
+    pub fn neighbours4(&self, c: impl Coord) -> Vec<&T> {
+        [(-1, 0), (0, -1), (0, 1), (1, 0)]
+            .iter()
+            .flat_map(|&(dx, dy)| self.neighbour(&c, dx, dy))
+            .collect()
+    }
+
+    pub fn neighbours8(&self, c: impl Coord) -> Vec<&T> {
+        [
+            (-1, -1),
+            (-1, 0),
+            (-1, 1),
+            (0, -1),
+            (0, 1),
+            (1, -1),
+            (1, 0),
+            (1, 1),
+        ]
+        .iter()
+        .flat_map(|&(dx, dy)| self.neighbour(&c, dx, dy))
+        .collect()
+    }
+
+    fn neighbour(&self, c: &impl Coord, dx: isize, dy: isize) -> Option<&T> {
+        if (c.x() == 0 && dx == -1) || (c.y() == 0 && dy == -1) {
+            None
+        } else {
+            let c = (
+                ((c.x() as isize) + dx) as usize,
+                ((c.y() as isize) + dy) as usize,
+            );
+            self.get(c)
+        }
     }
 }
 
