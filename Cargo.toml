@@ -8,3 +8,4 @@ build = "build.rs"
 [dependencies]
 regex = "1.4.2"
 lazy_static = "1.4.0"
+modinverse = "0.1.1"
