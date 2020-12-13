@@ -43,6 +43,7 @@ impl Solver for Problem {
 
 /// from https://gitlab.com/mboehnke/aoc-2020/-/blob/master/aoc-2020-10/src/solution.rs
 /// I can't make sense of this =)
+#[allow(dead_code)]
 fn arrangements(input: &[usize]) -> usize {
     let mut sorted = input.to_vec();
     sorted.sort_unstable();
