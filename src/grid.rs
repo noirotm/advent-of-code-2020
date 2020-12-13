@@ -14,6 +14,7 @@ pub struct Grid<T> {
     pub h: usize,
 }
 
+#[allow(dead_code)]
 impl<T> Grid<T>
 where
     T: Clone + Default + TryFrom<u8>,
