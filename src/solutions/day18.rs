@@ -25,9 +25,9 @@ mod parser1 {
     use nom::branch::alt;
     use nom::bytes::complete::tag;
     use nom::character::complete::{char, digit1, multispace0};
-    use nom::combinator::{all_consuming, map, map_res};
-    use nom::multi::{fold_many0, fold_many1};
-    use nom::sequence::{delimited, pair, preceded, terminated, tuple};
+    use nom::combinator::{all_consuming, map_res};
+    use nom::multi::fold_many0;
+    use nom::sequence::{delimited, pair, preceded, terminated};
     use nom::IResult;
     use std::str::FromStr;
 
@@ -43,7 +43,6 @@ mod parser1 {
 
     fn term(i: &str) -> IResult<&str, u64> {
         let number = map_res(preceded(ws, digit1), FromStr::from_str);
-
         alt((number, parens_expr))(i)
     }
 
@@ -53,7 +52,6 @@ mod parser1 {
         let add = preceded(ws, char('+'));
         let mul = preceded(ws, char('*'));
         let op = alt((mul, add));
-
         fold_many0(pair(op, term), first, |acc, (op, val)| {
             if op == '+' {
                 acc + val
@@ -90,9 +88,9 @@ mod parser2 {
     use nom::branch::alt;
     use nom::bytes::complete::tag;
     use nom::character::complete::{char, digit1, multispace0};
-    use nom::combinator::{all_consuming, map, map_res};
-    use nom::multi::{fold_many0, fold_many1};
-    use nom::sequence::{delimited, pair, preceded, terminated, tuple};
+    use nom::combinator::{all_consuming, map_res};
+    use nom::multi::fold_many0;
+    use nom::sequence::{delimited, pair, preceded, terminated};
     use nom::IResult;
     use std::str::FromStr;
 
@@ -106,14 +104,14 @@ mod parser2 {
         delimited(lparens, expr, rparens)(i)
     }
 
-    fn factor(i: &str) -> IResult<&str, u64> {
+    fn term(i: &str) -> IResult<&str, u64> {
         let number = map_res(preceded(ws, digit1), FromStr::from_str);
 
         alt((number, parens_expr))(i)
     }
 
-    fn term(i: &str) -> IResult<&str, u64> {
-        let (i, first) = factor(i)?;
+    fn factor(i: &str) -> IResult<&str, u64> {
+        let (i, first) = term(i)?;
 
         let add = preceded(ws, char('+'));
 
@@ -121,11 +119,11 @@ mod parser2 {
     }
 
     fn expr(i: &str) -> IResult<&str, u64> {
-        let (i, first) = term(i)?;
+        let (i, first) = factor(i)?;
 
         let mul = preceded(ws, char('*'));
 
-        fold_many0(pair(mul, term), first, |acc, (_, val)| acc * val)(i)
+        fold_many0(pair(mul, factor), first, |acc, (_, val)| acc * val)(i)
     }
 
     fn complete_expr(s: &str) -> IResult<&str, u64> {
